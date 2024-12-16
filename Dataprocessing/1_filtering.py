@@ -1,48 +1,41 @@
+# File for Filtering the Tweets
 import os
 import pandas as pd
 import psycopg2
 import re
 
-# Establishing connection to the database
+# Databaseconnection
 def connect_to_db():
-    try:
         conn = psycopg2.connect(
             host="localhost",
             database="postgres",
             user="postgres",
-            password="NordProJect_123"
+            password="*************"
         )
         cursor = conn.cursor()
         return conn, cursor
-    except Exception as e:
-        print(f"Database connection failed: {e}")
-        return None, None
-
-# Create or replace the table for filtered tweets in the "variance" schema
+    
+# Create Table
 def create_filtered_tweets_table(cursor):
-    try:
-        cursor.execute("""
-            DROP TABLE IF EXISTS variance.filtered_tweets;
-        """)
-        
-        cursor.execute("""
-            CREATE TABLE variance.filtered_tweets (
-                id SERIAL PRIMARY KEY,
-                tweet_text TEXT NOT NULL,
-                found_term TEXT,
-                created_at TIMESTAMP,  
-                user_location TEXT,    
-                place_full_name TEXT, 
-                geo_latitude DOUBLE PRECISION,  
-                geo_longitude DOUBLE PRECISION  
-            );
-        """)
-        cursor.connection.commit()
-        print("Table 'filtered_tweets' created successfully in schema 'variance'.")
-    except Exception as e:
-        print(f"Error creating table: {e}")
+    cursor.execute("""
+        DROP TABLE IF EXISTS variance.filtered_tweets;
+       """)
+    
+    cursor.execute("""
+        CREATE TABLE variance.filtered_tweets (
+            id SERIAL PRIMARY KEY,
+            tweet_text TEXT NOT NULL,
+            found_term TEXT,
+            created_at TIMESTAMP,  
+            user_location TEXT,    
+            place_full_name TEXT, 
+            geo_latitude DOUBLE PRECISION,  
+            geo_longitude DOUBLE PRECISION  
+        );
+    """)
+    cursor.connection.commit()
 
-# Fetch relevant landscape terms and synonyms from the "variance" schema
+# Get Terms
 def fetch_landscape_terms(cursor):
     try:
         cursor.execute("SELECT main_term_sp, synonyms FROM variance.landscape_terms WHERE relevant = TRUE;")
@@ -58,11 +51,11 @@ def fetch_landscape_terms(cursor):
         print(f"Error fetching landscape terms: {e}")
         return []
 
-# Tokenize the text (split by word boundaries)
+# Tokenizing
 def tokenize(text):
     return re.findall(r'\b\w+\b', text.lower())
 
-# Insert data into the "variance" schema table one by one for each term found
+# Insert Data
 def insert_single_entry(cursor, entry):
     try:
         insert_query = """
@@ -74,7 +67,7 @@ def insert_single_entry(cursor, entry):
     except Exception as e:
         print(f"Error inserting entry: {e}")
 
-# Process each CSV file to filter tweets based on landscape terms
+# Process CSV's
 def process_csv_file(file_path, landscape_terms, cursor):
     try:
         df = pd.read_csv(file_path, sep='\t', on_bad_lines='skip')
@@ -132,7 +125,7 @@ def process_all_csv_files(csv_directory, landscape_terms, cursor):
 
     print(f"Finished processing all files in {csv_directory}. Total tweets before filtering: {total_tweets_before_filtering}, Total tweets processed: {total_tweets_processed}, Total terms saved: {total_terms_saved}")
 
-# Main function
+# Main
 def main():
     conn, cursor = connect_to_db()
     if not conn:
