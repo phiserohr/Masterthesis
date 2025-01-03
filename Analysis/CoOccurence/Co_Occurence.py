@@ -1,3 +1,5 @@
+#script calculate co-occurence of terms
+
 import pandas as pd
 from collections import Counter
 from sqlalchemy import create_engine
@@ -20,7 +22,7 @@ target_terms = [
     "madrugada", "atardecer", "anochecer", "costa", "monte", "cumbre", "cabezo"
 ]
 
-# Fetch relevant tweets containing the target term
+# Fetch relevant tweets
 def fetch_tweets_with_term(engine, target_term):
     query = f"""
     SELECT tweet_text
@@ -37,7 +39,6 @@ def calculate_log_likelihood(tweets, target_term, window_size=3):
     total_word_count = Counter()
 
     for tweet in tweets['tweet_text']:
-        # Tokenize and filter out unwanted tokens
         doc = nlp(tweet.lower())
         words = [
             token.text for token in doc
@@ -85,7 +86,6 @@ def calculate_log_likelihood(tweets, target_term, window_size=3):
                 LL += O * log(O / E)
         LL *= 2
 
-        # Log: for easy numbers
         log_LL = log(LL) if LL > 0 else 0
 
         results.append({"Word": word, "Log_LL": log_LL, "Freq_co_occurrence": observed})
@@ -98,11 +98,10 @@ def generate_word_cloud(results_df, target_term):
     wordcloud = WordCloud(width=800, height=400, background_color="white", colormap="viridis")
     wordcloud.generate_from_frequencies(word_dict)
 
-    # Save word cloud
     wordcloud.to_file(f"{target_term}_wordcloud.png")
     print(f"Word cloud saved as {target_term}_wordcloud.png")
 
-# Main function
+# Main
 def main():
     for target_term in target_terms:
         print(f"Processing '{target_term}'...")
@@ -118,13 +117,10 @@ def main():
         top_results = results_df.sort_values(by="Log_LL", ascending=False).head(25)
         print(top_results)
 
-        # Save top results to CSV
         top_results.to_csv(f"{target_term}_top_terms.csv", index=False)
         print(f"Top terms saved to {target_term}_top_terms.csv")
 
-        # Generate and save word cloud
         generate_word_cloud(results_df, target_term)
 
-# Run the script
 if __name__ == "__main__":
     main()
