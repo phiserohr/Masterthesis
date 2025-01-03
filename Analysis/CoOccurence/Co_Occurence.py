@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 nlp = spacy.load("es_core_news_sm")
 
 # Database connection details
-db_connection_str = "postgresql://postgres:NordProJect_123@localhost/postgres"
+db_connection_str = "postgresql://postgres:**********@localhost/postgres"
 engine = create_engine(db_connection_str)
 
 # List of target terms
@@ -94,7 +94,7 @@ def calculate_log_likelihood(tweets, target_term, window_size=3):
 
 # Generate and save a word cloud
 def generate_word_cloud(results_df, target_term):
-    word_dict = dict(zip(results_df["Word"], results_df["Log_LL"]))
+    word_dict = dict(zip(results_df["Word"], r esults_df["Log_LL"]))
     wordcloud = WordCloud(width=800, height=400, background_color="white", colormap="viridis")
     wordcloud.generate_from_frequencies(word_dict)
 
