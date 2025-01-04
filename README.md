@@ -1,4 +1,6 @@
-# **Landscape Analysis with Twitter Data**
+# **Mapping Perception**
+
+Analyzing Landscape Discourse in Spanish-Speaking Central and South America Using Social Media Data.
 
 This repository contains all the code used for my research on how landscapes are described and perceived in Spanish-speaking Central and South America using Twitter data from 2012–2019. 
 The study applies Geographic Information Retrieval (GIR), Natural Language Processing (NLP), and machine learning techniques to extract spatial, temporal, and thematic patterns.
