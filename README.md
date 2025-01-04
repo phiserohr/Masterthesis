@@ -10,8 +10,7 @@ The data is not available on GitHub since it was provided to me by the Universit
 1. [Introduction](#introduction)
 2. [Data and Methods](#data-and-methods)
 3. [Repository Structure](#repository-structure)
-4. [Requirements](#requirements)
-5. [Results](#results)
+4. [Results](#results)
 ---
 
 ## **Introduction**
@@ -56,14 +55,6 @@ This project aims to analyze how landscapes are discussed and perceived in Spani
 │   └── 5_precision.py         # Evaluate precision of classification
 ├── README.md                  # Documentation for the repository
 └── requirements.txt           # Python dependencies
-```
-
----
-
-## **Requirements**
-Ensure you have Python 3.8+ installed. Install the required packages using:
-```bash
-pip install -r requirements.txt
 ```
 
 ---
